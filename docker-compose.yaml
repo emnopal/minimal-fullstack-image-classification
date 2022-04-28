@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  flaskapp:
+    container_name: skin-lesion-flask-app
+    build: .
+    restart: always
+    ports:
+      - 5000:5000/tcp
+
+  nginx:
+    container_name: nginx
+    image: nginx:latest
+    volumes:
+      - ./config/nginx:/etc/nginx/conf.d
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - flaskapp
+    restart: always
+    links:
+      - flaskapp:flaskapp
