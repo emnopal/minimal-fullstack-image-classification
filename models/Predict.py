@@ -60,7 +60,15 @@ class Predict:
         label = self.__label()
         probability_prediction = f"{(np.max(predicted))*100:.2f}%"
         class_prediction = label[np.argmax(predicted)]
-        return jsonify(result=class_prediction, probability=probability_prediction)
+        return jsonify({
+            'status': True,
+            'message': 'success',
+            'status_code': 200,
+            'data': {
+                'result': class_prediction,
+                'probability': probability_prediction
+            }
+        })
 
     def h5_to_tflite(self, optimizer=tf.lite.Optimize.OPTIMIZE_FOR_SIZE):
         model = self.__model()

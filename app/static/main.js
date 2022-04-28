@@ -47,7 +47,7 @@ function submitImage() {
   console.log("submit");
 
   if (!imageDisplay.src || !imageDisplay.src.startsWith("data")) {
-    window.alert("Pilih gambar sebelum memprediksi");
+    window.alert("Choose Image");
     return;
   }
 
@@ -117,7 +117,7 @@ function predictImage(image) {
     })
     .catch(err => {
       console.log("Error", err.message);
-      window.alert("Waduh ada error");
+      window.alert("There is internal error");
     });
 }
 
@@ -132,7 +132,7 @@ function displayResult(data) {
   // display the result
   // imageDisplay.classList.remove("loading");
   hide(loader);
-  predResult.innerHTML = data.result;
+  predResult.innerHTML = data.data.result;
   show(predResult);
 }
 

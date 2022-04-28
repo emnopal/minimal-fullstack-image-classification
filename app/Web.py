@@ -1,6 +1,6 @@
 import os
 import logging
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, jsonify
 from models import Predict
 from config import MODEL_FILE, LABEL_FILE
 
@@ -20,24 +20,36 @@ def index():
 @app.route('/predict', methods=['POST'])
 def predict():
     args = request.args
-    pred = Predict(MODEL_FILE, LABEL_FILE)
+    try:
+        pred = Predict(MODEL_FILE, LABEL_FILE)
+    except Exception as e:
+        logger.info(f"Failed Predicting")
+        return jsonify({
+            'status': False,
+            'message': 'failed',
+            'status_code': 500,
+        })
     if args:
         if args.get('mode').lower() == 'curl':
             logger.info(f"Predicting with mode {args}")
             result = pred.get_predicted_images(request.files['img'], mode='img')
-            return logger.info(f"Predicting Result: {result}")
+            logger.info(f"Predicting Result: {result}")
+            return result
         if args.get('mode').lower() == 'base64':
             logger.info(f"Predicting with mode {args}")
             result =  pred.get_predicted_images(request.json['base64-img'], mode='byte')
-            return logger.info(f"Predicting Result: {result}")
+            logger.info(f"Predicting Result: {result}")
+            return result
         if args.get('mode').lower() in ['image', 'imagefile', 'image_file', 'img', 'file']:
             logger.info(f"Predicting with mode {args}")
             result = pred.get_predicted_images(request.json['img'], mode='img')
-            return logger.info(f"Predicting Result: {result}")
+            logger.info(f"Predicting Result: {result}")
+            return result
     else:
         logger.info(f"Predicting with No Mode")
         result = pred.get_predicted_images(request.json)
-        return logger.info(f"Predicting Result: {result}")
+        logger.info(f"Predicting Result: {result}")
+        return result
 
 @app.route('/label', methods=['GET', 'POST'])
 def label():
